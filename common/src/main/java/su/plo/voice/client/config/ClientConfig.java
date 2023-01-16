@@ -216,6 +216,11 @@ public class ClientConfig {
         return entry.get() * playerVolumes.getOrDefault(uuid, 1.0D);
     }
 
+    public double getVolume() {
+        DoubleConfigEntry entry = voiceVolume;
+        return entry.get() * 1.0D;
+    }
+
     public static class ServerConfig {
         public IntegerConfigEntry distance = new IntegerConfigEntry(0, Short.MAX_VALUE);
         public IntegerConfigEntry priorityDistance = new IntegerConfigEntry(0, Short.MAX_VALUE);

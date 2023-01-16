@@ -140,7 +140,7 @@ modrinth {
     versionType.set(modrinthVersionType)
 
     gameVersions.addAll(modrinthSupportedVersions.split(","))
-    changelog.set(file("${rootDir}/changelog.md").readText())
+    //changelog.set(file("${rootDir}/changelog.md").readText())
     loaders.add("forge")
     uploadFile.set(remapJar)
 }

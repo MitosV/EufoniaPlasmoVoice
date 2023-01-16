@@ -2,6 +2,7 @@ package su.plo.voice.client.sound.openal;
 
 import lombok.SneakyThrows;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.EXTThreadLocalContext;
 import su.plo.voice.client.VoiceClient;
 import su.plo.voice.client.gui.VoiceSettingsScreen;
@@ -66,56 +67,64 @@ public class OpenALPlayerQueue extends AbstractSoundQueue {
                 continue;
             }
 
-            Player player = minecraft.level.getPlayerByUUID(this.from);
-            if(player == null) {
-                continue;
-            }
+            boolean isSpeaker = packet.getDistance() == -1;
 
-            Player clientPlayer = minecraft.player;
+            float percentage = (float) VoiceClient.getClientConfig().getVolume();
 
-            boolean isPriority = packet.getDistance() > VoiceClient.getServerConfig().getMaxDistance();
-            float distance = (float) player.position().distanceTo(clientPlayer.position());
-            float percentage = (float) VoiceClient.getClientConfig().getPlayerVolume(player.getUUID(), isPriority);
 
-            if (percentage == 0.0F) {
-                continue;
-            }
+            if(isSpeaker){
+                source.setRelative(true);
+                source.setPosition(new Vec3(0,0,0));
+            }else {
+                Player player = minecraft.level.getPlayerByUUID(this.from);
+                if(player == null) {
+                    continue;
+                }
 
-            int maxDistance = packet.getDistance();
-            if(distance > maxDistance) {
-                lastSequenceNumber = -1L;
-                lastOcclusion = -1;
-                continue;
-            }
+                Player clientPlayer = minecraft.player;
+                percentage  = (float) VoiceClient.getClientConfig().getPlayerVolume(player.getUUID(), isSpeaker);
+                float distance = (float) player.position().distanceTo(clientPlayer.position());
 
-            int fadeDistance = isPriority
-                    ? maxDistance / VoiceClient.getServerConfig().getPriorityFadeDivisor()
-                    : maxDistance / VoiceClient.getServerConfig().getFadeDivisor();
+                if (percentage == 0.0F) {
+                    continue;
+                }
 
-            if(!VoiceClient.getSoundEngine().isSoundPhysics() && VoiceClient.getClientConfig().occlusion.get()) {
-                double occlusion = Occlusion.getOccludedPercent(player.level, clientPlayer, player.position());
-                if(lastOcclusion >= 0) {
-                    if(occlusion > lastOcclusion) {
-                        lastOcclusion = Math.max(lastOcclusion + 0.05, 0.0D);
-                    } else {
-                        lastOcclusion = Math.max(lastOcclusion - 0.05, occlusion);
+                int maxDistance = packet.getDistance();
+                if(distance > maxDistance ) {
+                    lastSequenceNumber = -1L;
+                    lastOcclusion = -1;
+                    continue;
+                }
+
+                int fadeDistance = isSpeaker
+                        ? maxDistance / VoiceClient.getServerConfig().getPriorityFadeDivisor()
+                        : maxDistance / VoiceClient.getServerConfig().getFadeDivisor();
+
+                if(!VoiceClient.getSoundEngine().isSoundPhysics() && VoiceClient.getClientConfig().occlusion.get()) {
+                    double occlusion = Occlusion.getOccludedPercent(player.level, clientPlayer, player.position());
+                    if(lastOcclusion >= 0) {
+                        if(occlusion > lastOcclusion) {
+                            lastOcclusion = Math.max(lastOcclusion + 0.05, 0.0D);
+                        } else {
+                            lastOcclusion = Math.max(lastOcclusion - 0.05, occlusion);
+                        }
+
+                        occlusion = lastOcclusion;
                     }
+                    percentage *= (float) (1D - occlusion);
+                    if(lastOcclusion == -1) {
+                        lastOcclusion = occlusion;
+                    }
+                }
 
-                    occlusion = lastOcclusion;
-                }
-                percentage *= (float) (1D - occlusion);
-                if(lastOcclusion == -1) {
-                    lastOcclusion = occlusion;
-                }
+                source.setPosition(player.position());
+                source.setDirection(player.getLookAngle());
+                source.setFadeDistance(fadeDistance);
+                source.setRelative(false);
+                source.setMaxDistance(maxDistance, 0.95F);
             }
 
-            source.setPosition(player.position());
-            source.setDirection(player.getLookAngle());
             source.setVolume(percentage);
-
-            source.setFadeDistance(fadeDistance);
-            source.setMaxDistance(maxDistance, 0.95F);
-
 
             if (lastSequenceNumber >= 0) {
                 int packetsToCompensate = (int) (packet.getSequenceNumber() - (lastSequenceNumber + 1));
