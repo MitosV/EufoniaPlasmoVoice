@@ -104,7 +104,7 @@ tasks {
     remapJar {
         dependsOn(getByName<ShadowJar>("shadowJar"))
         input.set(shadowJar.get().archiveFile)
-        archiveBaseName.set("plasmovoice-fabric-${displayMinecraftVersion}")
+        archiveBaseName.set("eufonia-voicechat-1.19.2")
     }
 
     build {

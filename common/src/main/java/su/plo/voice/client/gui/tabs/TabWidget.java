@@ -276,16 +276,20 @@ public class TabWidget extends ContainerObjectSelectionList<TabWidget.Entry> {
             this.height = height;
         }
     }
+    public void tick(){
 
+    }
     public class OptionEntry extends Entry {
         private final Component text;
         private final List<Component> tooltip;
         private final AbstractWidget element;
+
         private final Button resetButton;
         private final ConfigEntry entry;
 
         public OptionEntry(Component text, AbstractWidget element, ConfigEntry entry, ResetAction action) {
             this(text, element, entry, null, action);
+
         }
 
         public OptionEntry(Component text, AbstractWidget element, ConfigEntry entry, List<Component> tooltip, ResetAction action) {
@@ -305,6 +309,7 @@ public class TabWidget extends ContainerObjectSelectionList<TabWidget.Entry> {
             });
         }
 
+        public void setActive(boolean active){element.active = active;}
         @Override
         public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             int elementY = y + entryHeight - 4;

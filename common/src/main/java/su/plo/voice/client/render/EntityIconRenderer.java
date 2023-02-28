@@ -10,10 +10,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
+import su.plo.voice.client.Icons;
 import su.plo.voice.client.VoiceClient;
+import su.plo.voice.client.config.ClientConfig;
 import su.plo.voice.client.gui.PlayerVolumeHandler;
 import su.plo.voice.client.socket.SocketClientUDPQueue;
 import su.plo.voice.common.entities.MutedEntity;
@@ -24,36 +27,34 @@ public class EntityIconRenderer {
     @Getter
     private static final EntityIconRenderer instance = new EntityIconRenderer();
 
+    private final Minecraft minecraft;
     private EntityIconRenderer() {
+        minecraft = Minecraft.getInstance();
     }
 
     public void entityRender(Player player, double distance, PoseStack matrices, boolean hasLabel, MultiBufferSource vertexConsumers, int light) {
-        if (isIconHidden(player)) return;
+        //if (isIconHidden(player)) return;
 
         if (VoiceClient.getServerConfig().getClients().contains(player.getUUID())) {
             if (VoiceClient.getClientConfig().isMuted(player.getUUID())) {
-                renderIcon(80, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
+                //renderIcon(80, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
+                renderPlayerSmallIcon(player, Icons.SPEAKER_OFF,matrices,vertexConsumers,light);
             } else if (VoiceClient.getServerConfig().getMuted().containsKey(player.getUUID())) {
-                MutedEntity muted = VoiceClient.getServerConfig().getMuted().get(player.getUUID());
-                if (muted.to == 0 || muted.to > System.currentTimeMillis()) {
-                    renderIcon(80, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
-                } else {
-                    VoiceClient.getServerConfig().getMuted().remove(muted.uuid);
-                }
+                renderPlayerIcon(player, Icons.SPEAKER_OFF,matrices,vertexConsumers,light);
             } else {
                 Boolean isTalking = SocketClientUDPQueue.talking.get(player.getUUID());
                 if (isTalking != null) {
-                    if (isTalking) {
-                        renderIcon(96, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
-                    } else {
-                        renderIcon(64, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
-                    }
+                    if (isTalking)
+                        renderPlayerSmallIcon(player, Icons.RED_SPEAKER,matrices,vertexConsumers,light);
+                    else
+                        renderPlayerSmallIcon(player, Icons.RED_SPEAKER,matrices,vertexConsumers,light);
                 } else if (PlayerVolumeHandler.isShow(player)) {
                     renderPercent(player, distance, matrices, hasLabel, vertexConsumers, light);
                 }
             }
         } else {
-            renderIcon(112, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
+            renderPlayerSmallIcon(player, Icons.DISCONECTED,matrices,vertexConsumers,light);
+            //renderIcon(112, 0, player, distance, matrices, hasLabel, vertexConsumers, light);
         }
     }
 
@@ -112,6 +113,76 @@ public class EntityIconRenderer {
         }
 
         matrices.popPose();
+    }
+
+    private void renderPlayerSmallIcon(Player player, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+        matrixStackIn.pushPose();
+
+        float font = minecraft.font.width(player.getDisplayName());
+
+        matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
+        matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
+        matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
+        matrixStackIn.scale(2, 2,1);
+        matrixStackIn.translate(-(font/3.5), -3D, 0D);
+
+        float offset = (float) (font / 2 );
+
+        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        int alpha = 32;
+
+        if (player.isDiscrete()) {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        } else {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, light);
+
+            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
+            vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        }
+        matrixStackIn.popPose();
+    }
+
+    private void renderPlayerIcon(Player player, ResourceLocation texture, PoseStack matrixStackIn,
+                                  MultiBufferSource buffer, int light) {
+        matrixStackIn.pushPose();
+        matrixStackIn.translate(0D, player.getBbHeight() + 0.5D, 0D);
+        matrixStackIn.mulPose(minecraft.getEntityRenderDispatcher().cameraOrientation());
+        matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
+        matrixStackIn.translate(0D, -1D, 0D);
+
+        float offset = (float) (minecraft.font.width(player.getDisplayName()) / 2 );
+
+        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        int alpha = 32;
+
+        if (player.isDiscrete()) {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        } else {
+            vertex(builder, matrixStackIn, offset, 10F, 0F, 0F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, light);
+
+            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
+            vertex(builderSeeThrough, matrixStackIn, offset, 10F, 0F, 0F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 10F, 0F, 1F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 10F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        }
+
+        matrixStackIn.popPose();
     }
 
     private void renderIcon(float u, float v, Player player, double distance, PoseStack matrices,
@@ -179,5 +250,9 @@ public class EntityIconRenderer {
         builder.uv2(light);
         builder.normal(0F, 0F, -1F);
         builder.endVertex();
+    }
+
+    private void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
+        vertex(builder, matrixStack, x, y, z, u, v, 255, light);
     }
 }

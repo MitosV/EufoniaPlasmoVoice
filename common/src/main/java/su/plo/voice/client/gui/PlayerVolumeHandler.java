@@ -36,6 +36,7 @@ public class PlayerVolumeHandler {
     }
 
     public static boolean onMouseScroll(double vertical) {
+
         if (focusedPlayer != null) {
             lastScroll = System.currentTimeMillis();
             int currentVolume = (int) Math.round(VoiceClient.getClientConfig().getPlayerVolumes().getOrDefault(focusedPlayer.getUUID(), 1.0D) * 100.0D);

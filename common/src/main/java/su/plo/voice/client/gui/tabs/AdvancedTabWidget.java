@@ -92,7 +92,7 @@ public class AdvancedTabWidget extends TabWidget {
                 })
         );
 
-
+        /*
         ConfigIntegerSlider directionalSourcesAngle = new ConfigIntegerSlider(0, 0, 97, config.directionalSourcesAngle);
         ToggleButton directionalSources = new ToggleButton(0, 0, 97, 20, config.directionalSources,
                 toggled -> directionalSourcesAngle.active = toggled);
@@ -183,6 +183,6 @@ public class AdvancedTabWidget extends TabWidget {
                         ((VoiceVolumeSlider) element).updateValue();
                     })
             );
-        }
+        }*/
     }
 }

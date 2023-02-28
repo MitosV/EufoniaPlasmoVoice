@@ -12,8 +12,6 @@ sample_rate: 48000
 # Voice distance
 distances:
   - 8
-  - 16
-  - 24
 # Default voice distance
 # If 0 distance will be first element from distances
 default_distance: 16

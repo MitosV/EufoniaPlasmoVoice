@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import su.plo.voice.client.Icons;
 import su.plo.voice.client.VoiceClient;
 import su.plo.voice.client.gui.PlayerVolumeWidget;
 
@@ -48,7 +49,7 @@ public abstract class MixinPlayerEntry {
     @Final
     private List<AbstractWidget> children;
     private Button muteShowButton;
-    private Button muteHideButton;
+    //private Button muteHideButton;
     private Button volumeButton;
     private Button volumeButtonActive;
     private PlayerVolumeWidget playerVolumeWidget;
@@ -86,8 +87,8 @@ public abstract class MixinPlayerEntry {
                 this.volumeButton.visible = true;
             }, (buttonWidget, matrixStack, i, j) -> {
             }, Component.translatable("gui.socialInteractions.hide"));
-
-            this.muteHideButton = new ImageButton(0, 0, 20, 20, 0, 32, 20, VoiceClient.ICONS, 256, 256, (buttonWidget) -> {
+            //32, 20
+            /*this.muteHideButton = new ImageButton(0, 0, 20, 20, 0, 32, 20, VoiceClient.ICONS, 256, 256, (buttonWidget) -> {
                 VoiceClient.getClientConfig().mute(id);
                 this.muteShowButton.visible = true;
                 this.muteHideButton.visible = false;
@@ -121,16 +122,20 @@ public abstract class MixinPlayerEntry {
 
             this.customButtons = ImmutableList.of(this.muteHideButton, this.muteShowButton,
                     this.volumeButton, this.volumeButtonActive, this.playerVolumeWidget);
+            */
+
+            this.customButtons = ImmutableList.of(this.muteShowButton,
+                    this.volumeButton, this.volumeButtonActive, this.playerVolumeWidget);
         }
     }
 
     @Inject(method = "render", at = @At(value = "TAIL"))
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight,
                        int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo info) {
-        if (this.muteHideButton != null && this.muteShowButton != null) {
-            this.muteHideButton.x = x + (entryWidth - this.muteHideButton.getWidth() - 52);
+        if (this.muteShowButton != null) {
+            /*this.muteHideButton.x = x + (entryWidth - this.muteHideButton.getWidth() - 52);
             this.muteHideButton.y = y + (entryHeight - this.muteHideButton.getHeight()) / 2;
-            this.muteHideButton.render(matrices, mouseX, mouseY, tickDelta);
+            this.muteHideButton.render(matrices, mouseX, mouseY, tickDelta);*/
             this.muteShowButton.x = x + (entryWidth - this.muteShowButton.getWidth() - 52);
             this.muteShowButton.y = y + (entryHeight - this.muteShowButton.getHeight()) / 2;
             this.muteShowButton.render(matrices, mouseX, mouseY, tickDelta);

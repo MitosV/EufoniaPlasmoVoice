@@ -3,6 +3,7 @@ val fabricLoaderVersion: String by rootProject
 val fabricVersion: String by rootProject
 
 dependencies {
+    implementation("org.projectlombok:lombok:1.18.22")
     modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
 
     // Lombok

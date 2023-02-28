@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class GeneralTabWidget extends TabWidget {
+
+    int volumeIndex = 0;
+
     public GeneralTabWidget(Minecraft client, VoiceSettingsScreen parent) {
 //        super(minecraftClient, width, height, top, bottom, itemHeight);
         super(client, parent);
@@ -46,15 +49,21 @@ public class GeneralTabWidget extends TabWidget {
                     VoiceClient.getSoundEngine().restart();
                 })
         );
-        this.addEntry(new OptionEntry(
-                Component.translatable("gui.plasmo_voice.general.voice_chat_volume"),
-                new VoiceVolumeSlider(0, 0, 97, VoiceClient.getClientConfig().voiceVolume),
-                VoiceClient.getClientConfig().voiceVolume,
-                TextUtils.multiLine("gui.plasmo_voice.general.voice_chat_volume.tooltip", 2),
-                (button, element) -> {
-                    ((VoiceVolumeSlider) element).updateValue();
-                })
-        );
+        var volumeSlider = new VoiceVolumeSlider(0, 0, 97, VoiceClient.getClientConfig().voiceVolume);
+        volumeSlider.active = !ClientConfig.isBlockVolume();
+        if (!ClientConfig.isBlockVolume())
+            this.addEntry(new OptionEntry(
+                    Component.translatable("gui.plasmo_voice.general.voice_chat_volume"),
+                    volumeSlider,
+                    VoiceClient.getClientConfig().voiceVolume,
+                    TextUtils.multiLine("gui.plasmo_voice.general.voice_chat_volume.tooltip", 2),
+                    (button, element) -> {
+                        element.active = !ClientConfig.isBlockVolume();
+                        button.active = !ClientConfig.isBlockVolume();
+                        ((VoiceVolumeSlider) element).updateValue();
+                    })
+            );
+        /*
         if (VoiceClient.getClientConfig().showPriorityVolume.get()) {
             this.addEntry(new OptionEntry(
                     Component.translatable("gui.plasmo_voice.general.voice_chat_volume.priority"),
@@ -62,10 +71,11 @@ public class GeneralTabWidget extends TabWidget {
                     VoiceClient.getClientConfig().priorityVolume,
                     TextUtils.multiLine("gui.plasmo_voice.general.voice_chat_volume.tooltip", 2),
                     (button, element) -> {
+
                         ((VoiceVolumeSlider) element).updateValue();
                     })
             );
-        }
+        }*/
         ToggleButton occlusion = new ToggleButton(0, 0, 97, 20, VoiceClient.getClientConfig().occlusion, toggled ->
                 VoiceClient.getClientConfig().occlusion.set(toggled)
         );
@@ -116,6 +126,7 @@ public class GeneralTabWidget extends TabWidget {
                     ((MicrophoneVolumeSlider) element).updateValue();
                 })
         );
+        /*
         this.addEntry(new OptionEntry(
                 Component.translatable("gui.plasmo_voice.general.voice_distance"),
                 new DistanceSlider(0, 0, 97),
@@ -156,7 +167,7 @@ public class GeneralTabWidget extends TabWidget {
                     VoiceClient.getServerConfig().setPriorityDistance(VoiceClient.getClientConfig().getCurrentServerConfig().priorityDistance.get().shortValue());
                     ((NumberTextFieldWidget) element).setValue(String.valueOf(VoiceClient.getClientConfig().getCurrentServerConfig().priorityDistance.get()));
                 })
-        );
+        );*/
 
         MicrophoneThresholdWidget activationThreshold = new MicrophoneThresholdWidget(0, 0, 97, true, parent);
         String[] activations = new String[]{"gui.plasmo_voice.general.activation.ptt", "gui.plasmo_voice.general.activation.voice"};
@@ -203,7 +214,8 @@ public class GeneralTabWidget extends TabWidget {
                 Component.translatable("gui.plasmo_voice.general.icons.hidden")
         );
 
-        this.addEntry(new CategoryEntry(Component.translatable("gui.plasmo_voice.general.icons")));
+        //this.addEntry(new CategoryEntry(Component.translatable("gui.plasmo_voice.general.icons")));
+        /*
         this.addEntry(new OptionEntry(
                 Component.translatable("gui.plasmo_voice.general.icons.show"),
                 new DropDownWidget(parent, 0, 0, 97, 20,
@@ -229,8 +241,11 @@ public class GeneralTabWidget extends TabWidget {
                 (button, element) -> {
                     element.setMessage(VoiceClient.getClientConfig().micIconPosition.get().translate());
                 })
-        );
+        );*/
     }
+
+
+
 
     private Component onOff(boolean on, String[] variants) {
         return Component.translatable(variants[on ? 1 : 0]);

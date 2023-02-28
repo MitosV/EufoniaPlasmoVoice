@@ -25,6 +25,7 @@ public abstract class VoiceClient {
     private static VoiceClient instance;
 
     public static final ResourceLocation PLASMO_VOICE = new ResourceLocation("plasmo:voice");
+    public static final ResourceLocation CUSTOM_VOICE = new ResourceLocation("plasmo:custom");
     public static final String PROTOCOL_VERSION = "1.0.0";
     public static final Logger LOGGER = LogManager.getLogger("Plasmo Voice");
     public static final UUID NIL_UUID = new UUID(0, 0);
@@ -50,6 +51,7 @@ public abstract class VoiceClient {
     @Getter
     private static boolean speakingPriority = false;
 
+
     // key bindings
     public static KeyMapping menuKey;
 
@@ -70,11 +72,15 @@ public abstract class VoiceClient {
                 clientConfig.microphoneMuted.invert();
             }
         });
+        /*
         keyBindings.muteChat.get().setOnPress(action -> {
             if (action == 1) {
                 clientConfig.speakerMuted.invert();
             }
-        });
+        });*/
+
+        clientConfig.clearMute();
+        /*
         keyBindings.increaseDistance.get().setOnPress(action -> {
             if (action == 1 && minecraft.player != null && VoiceClient.isConnected()) {
                 ClientConfig.ServerConfig serverConfig;
@@ -129,7 +135,7 @@ public abstract class VoiceClient {
                             ), false);
                 }
             }
-        });
+        });*/
     }
 
     public static void disconnect() {

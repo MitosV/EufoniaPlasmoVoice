@@ -228,9 +228,7 @@ public class Recorder implements Runnable {
     }
 
     private void voiceActivation(byte[] normBuffer) {
-        boolean priorityPressed = VoiceClient.getClientConfig().keyBindings.priorityPushToTalk.get().isPressed()
-                && VoiceClient.getServerConfig().isPriority()
-                && VoiceClient.getServerConfig().getPriorityDistance() > VoiceClient.getServerConfig().getMaxDistance();
+        boolean priorityPressed = false;
 
         if (VoiceClient.isMicrophoneLoopback()) {
             if (VoiceClient.isSpeaking()) {
@@ -298,9 +296,7 @@ public class Recorder implements Runnable {
     }
 
     private void pushToTalk(byte[] normBuffer) {
-        boolean priorityPressed = VoiceClient.getClientConfig().keyBindings.priorityPushToTalk.get().isPressed()
-                && VoiceClient.getServerConfig().isPriority()
-                && VoiceClient.getServerConfig().getPriorityDistance() > VoiceClient.getServerConfig().getMaxDistance();
+        boolean priorityPressed = false;
         boolean pushToTalkPressed = VoiceClient.getClientConfig().keyBindings.pushToTalk.get().isPressed()
                 || priorityPressed;
 

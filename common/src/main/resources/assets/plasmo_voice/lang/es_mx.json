@@ -180,9 +180,9 @@
     "gui.plasmo_voice.cannot_connect_to_udp_2": "Es posible que el puerto UDP esté cerrado. Lee la wiki:",
     "gui.plasmo_voice.cannot_connect_to_udp_3": "%s",
 
-    "message.plasmo_voice.min_version": "§6[Plasmo Voice]§7 Tu versión no está actulizada. La versión mínima es %s",
-    "message.plasmo_voice.version_not_supported": "§6[Plasmo Voice]§7 Tu versión aún no tiene soporte. La versión actual con soporte es %s",
-    "message.plasmo_voice.new_version_available": "§6[Plasmo Voice]§7 Nueva versión disponible [%s§7]. Descargar: %s",
+    "message.plasmo_voice.min_version": "§6[Eufonia VoiceChat]§7 Tu versión no está actulizada. La versión mínima es %s",
+    "message.plasmo_voice.version_not_supported": "§6[Eufonia VoiceChat]§7 Tu versión aún no tiene soporte. La versión actual con soporte es %s",
+    "message.plasmo_voice.new_version_available": "§6[Eufonia VoiceChat]§7 Nueva versión disponible [%s§7]. Descargar: %s",
 
     "message.plasmo_voice.distance_changed": "El valor de la distancia de voz es: %d",
     "message.plasmo_voice.occlusion_changed": "Oclusión de sonido: %s",
@@ -190,7 +190,7 @@
     "commands.plasmo_voice.whitelist_on": "Silenciar todos está activado.",
     "commands.plasmo_voice.whitelist_off": "Silenciar todos está desactivado.",
 
-    "commands.plasmo_voice.min_priority_distance": "§6[Plasmo Voice]§7 La distancia de prioridad de voz debe ser mayor que %d",
-    "commands.plasmo_voice.max_priority_distance": "§6[Plasmo Voice]§7 La distancia de prioridad de voz debe ser menor que %d",
-    "commands.plasmo_voice.priority_distance_set": "§6[Plasmo Voice]§7 La distancia de prioridad de voz cambiada a %d"
+    "commands.plasmo_voice.min_priority_distance": "§6[Eufonia VoiceChat]§7 La distancia de prioridad de voz debe ser mayor que %d",
+    "commands.plasmo_voice.max_priority_distance": "§6[Eufonia VoiceChat]§7 La distancia de prioridad de voz debe ser menor que %d",
+    "commands.plasmo_voice.priority_distance_set": "§6[Eufonia VoiceChat]§7 La distancia de prioridad de voz cambiada a %d"
 }

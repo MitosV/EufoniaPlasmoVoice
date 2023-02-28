@@ -72,8 +72,8 @@ public class ClientConfig {
     public IntegerConfigEntry directionalSourcesAngle = new IntegerConfigEntry(100, 360);
 
     public BooleanConfigEntry compressor = new BooleanConfigEntry();
-    public IntegerConfigEntry compressorThreshold = new IntegerConfigEntry(-60, 0);
-    public IntegerConfigEntry limiterThreshold = new IntegerConfigEntry(-60, 0);
+    public IntegerConfigEntry compressorThreshold = new IntegerConfigEntry(-100, 0);
+    public IntegerConfigEntry limiterThreshold = new IntegerConfigEntry(-100, 0);
 
     // visual
     public BooleanConfigEntry visualizeDistance = new BooleanConfigEntry();
@@ -87,6 +87,19 @@ public class ClientConfig {
     // sound physics
     public BooleanConfigEntry micReverb = new BooleanConfigEntry();
     public DoubleConfigEntry micReverbVolume = new DoubleConfigEntry(0, 2);
+
+    @Setter
+    @Getter
+    private static boolean blockVoice = false;
+
+    @Setter
+    @Getter
+    private static boolean principal = false;
+
+    @Setter
+    @Getter
+    private static boolean blockVolume = false;
+
 
     @Getter
     private transient HashSet<UUID> muted = new HashSet<>();
@@ -205,6 +218,12 @@ public class ClientConfig {
         save();
     }
 
+
+    public void clearMute() {
+        muted.clear();
+        save();
+    }
+
     public double getPlayerVolume(UUID uuid, boolean priority) {
         DoubleConfigEntry entry;
         if (showPriorityVolume.get() && priority) {
@@ -234,17 +253,17 @@ public class ClientConfig {
 
         // general
         public KeyBindingConfigEntry pushToTalk = new KeyBindingConfigEntry();
-        public KeyBindingConfigEntry priorityPushToTalk = new KeyBindingConfigEntry();
+        //public KeyBindingConfigEntry priorityPushToTalk = new KeyBindingConfigEntry();
         public KeyBindingConfigEntry muteMicrophone = new KeyBindingConfigEntry();
-        public KeyBindingConfigEntry muteChat = new KeyBindingConfigEntry();
+        //public KeyBindingConfigEntry muteChat = new KeyBindingConfigEntry();
         public KeyBindingConfigEntry action = new KeyBindingConfigEntry();
 
         // distance
-        public KeyBindingConfigEntry increaseDistance = new KeyBindingConfigEntry();
-        public KeyBindingConfigEntry decreaseDistance = new KeyBindingConfigEntry();
+        //public KeyBindingConfigEntry increaseDistance = new KeyBindingConfigEntry();
+        //public KeyBindingConfigEntry decreaseDistance = new KeyBindingConfigEntry();
 
         // sound occlusion
-        public KeyBindingConfigEntry occlusion = new KeyBindingConfigEntry();
+        //public KeyBindingConfigEntry occlusion = new KeyBindingConfigEntry();
 
         public transient Set<InputConstants.Key> pressed = ConcurrentHashMap.newKeySet();
 
@@ -255,31 +274,33 @@ public class ClientConfig {
                     "gui.plasmo_voice.general",
                     true
             );
+            /*
             priorityPushToTalk.setDefault(
                     this,
                     new KeyBinding("key.plasmo_voice.priority_ptt", ImmutableList.of()),
                     "gui.plasmo_voice.general",
                     true
-            );
+            );*/
             muteMicrophone.setDefault(
                     this,
                     new KeyBinding("key.plasmo_voice.mute", ImmutableList.of(InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_M))),
                     "gui.plasmo_voice.general",
                     false
             );
+            /*
             muteChat.setDefault(
                     this,
                     new KeyBinding("key.plasmo_voice.mute_chat", ImmutableList.of()),
                     "gui.plasmo_voice.general",
                     false
-            );
+            );*/
             action.setDefault(
                     this,
                     new KeyBinding("key.plasmo_voice.action", ImmutableList.of(InputConstants.Type.MOUSE.getOrCreate(GLFW.GLFW_MOUSE_BUTTON_2))),
                     "gui.plasmo_voice.general",
                     false
             );
-
+/*
             increaseDistance.setDefault(
                     this,
                     new KeyBinding("key.plasmo_voice.distance.increase", ImmutableList.of()),
@@ -298,7 +319,7 @@ public class ClientConfig {
                     new KeyBinding("key.plasmo_voice.occlusion.toggle", ImmutableList.of()),
                     "key.plasmo_voice.occlusion",
                     false
-            );
+            );*/
         }
 
         private boolean isKeyBindOpened() {

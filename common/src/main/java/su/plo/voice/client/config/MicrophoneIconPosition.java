@@ -34,7 +34,7 @@ public enum MicrophoneIconPosition {
     public int getY(Minecraft client) {
         return switch (this) {
             case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 16;
-            case BOTTOM_LEFT, BOTTOM_RIGHT -> client.getWindow().getGuiScaledHeight() - 32;
+            case BOTTOM_LEFT, BOTTOM_RIGHT -> client.getWindow().getGuiScaledHeight() - 48;
             case BOTTOM_CENTER -> client.getWindow().getGuiScaledHeight() - 54;
         };
     }

@@ -5,8 +5,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import su.plo.voice.client.Icons;
 import su.plo.voice.client.VoiceClient;
+import su.plo.voice.client.config.ClientConfig;
+import su.plo.voice.client.config.MicrophoneIconPosition;
 
 public class VoiceHud {
     private final Minecraft client = Minecraft.getInstance();
@@ -30,7 +34,7 @@ public class VoiceHud {
         ) {
             renderMicrophoneMuted();
         } else if (VoiceClient.isSpeaking()) {
-            if (VoiceClient.isSpeakingPriority()) {
+            if (ClientConfig.isPrincipal()) {
                 renderPrioritySpeaking();
             } else {
                 renderSpeaking();
@@ -39,33 +43,41 @@ public class VoiceHud {
     }
 
     private void renderConnectionError() {
-        renderIcon(0, 16);
+        renderIcon(Icons.DISCONECTED);
     }
 
     private void renderSpeakerMuted() {
-        renderIcon(80, 0);
+        renderIcon(Icons.SPEAKER_OFF);
     }
 
     private void renderMicrophoneMuted() {
-        renderIcon(16, 0);
+        renderIcon(Icons.MICROPHONE_OFF);
     }
 
     private void renderSpeaking() {
-        renderIcon(0, 0);
+        renderIcon(Icons.MICROPHONE);
     }
 
     private void renderPrioritySpeaking() {
-        renderIcon(16, 16);
+        renderIcon(Icons.MICROPHONE_GOLD);
     }
 
-    private void renderIcon(int x, int z) {
+    private void renderIcon(ResourceLocation location) {
         final Gui inGameHud = client.gui;
         final PoseStack matrixStack = new PoseStack();
-
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, VoiceClient.ICONS);
+        RenderSystem.setShaderTexture(0, location);
 
+        int p = 40;
+
+        inGameHud.blit(
+                matrixStack,
+                MicrophoneIconPosition.BOTTOM_LEFT.getX(client),
+                MicrophoneIconPosition.BOTTOM_LEFT.getY(client),
+                0,0, p, p, p, p);
+
+/*
         inGameHud.blit(
                 matrixStack,
                 VoiceClient.getClientConfig().micIconPosition.get().getX(client),
@@ -74,6 +86,6 @@ public class VoiceHud {
                 z,
                 16,
                 16
-        );
+        );*/
     }
 }

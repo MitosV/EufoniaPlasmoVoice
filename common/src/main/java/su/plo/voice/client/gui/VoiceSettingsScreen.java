@@ -87,13 +87,13 @@ public class VoiceSettingsScreen extends Screen {
     private static Component getTranslatedTitle() {
         Component title = Component.translatable(
                 "gui.plasmo_voice.title",
-                "Plasmo Voice " + VoiceClient.getInstance().getVersion()
+                "Eufonia VoiceChat"// + VoiceClient.getInstance().getVersion()
         );
         Language language = Language.getInstance();
 
         if (!language.getOrDefault("gui.plasmo_voice.title").contains("%s")) {
-            return Component.literal("Plasmo Voice ")
-                    .append(Component.literal(VoiceClient.getInstance().getVersion()))
+            return Component.literal("Eufonia VoiceChat")
+                    //.append(Component.literal(VoiceClient.getInstance().getVersion()))
                     .append(Component.literal(" Settings"));
         }
 
@@ -152,7 +152,7 @@ public class VoiceSettingsScreen extends Screen {
                 toRemove.add(particle);
             }
         }
-
+        tabWidgets.forEach(TabWidget::tick);
         particles.removeAll(toRemove);
 
         if (System.currentTimeMillis() - lastClick > 5000L) {
@@ -201,6 +201,8 @@ public class VoiceSettingsScreen extends Screen {
                     ).withStyle(ChatFormatting.GRAY)
             ));
         }, null);
+
+
 
         ImageButton muteMicShow = new ImageButton(this.width - 52, 8, 20, 20, 20, 32, 20,
                 VoiceClient.ICONS, 256, 256, button -> {
@@ -268,6 +270,9 @@ public class VoiceSettingsScreen extends Screen {
 
         muteSpeakerHide.visible = !config.speakerMuted.get();
         muteSpeakerShow.visible = config.speakerMuted.get();
+
+        muteSpeakerHide.active = !ClientConfig.isBlockVoice();
+        muteSpeakerShow.active = !ClientConfig.isBlockVoice();
 
         this.muteMicButtons = ImmutableList.of(muteMicHide, muteMicShow);
         this.muteSpeakerButtons = ImmutableList.of(muteSpeakerHide, muteSpeakerShow);

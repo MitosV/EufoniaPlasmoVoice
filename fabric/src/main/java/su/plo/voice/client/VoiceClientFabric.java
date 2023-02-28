@@ -22,6 +22,7 @@ import su.plo.voice.client.gui.VoiceHud;
 import su.plo.voice.client.gui.VoiceNotAvailableScreen;
 import su.plo.voice.client.gui.VoiceSettingsScreen;
 import su.plo.voice.client.network.ClientNetworkHandlerFabric;
+import su.plo.voice.client.network.CustomClientNetworkHandler;
 
 @Environment(EnvType.CLIENT)
 public class VoiceClientFabric extends VoiceClient implements ClientModInitializer {
@@ -38,6 +39,7 @@ public class VoiceClientFabric extends VoiceClient implements ClientModInitializ
 
         ClientNetworkHandlerFabric network = new ClientNetworkHandlerFabric();
         ClientPlayNetworking.registerGlobalReceiver(PLASMO_VOICE, network::handle);
+        ClientPlayNetworking.registerGlobalReceiver(CUSTOM_VOICE, CustomClientNetworkHandler::receive);
 
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
             dispatcher.register(ClientCommandManager.literal("vc")
