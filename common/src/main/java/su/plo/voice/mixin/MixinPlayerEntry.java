@@ -88,7 +88,8 @@ public abstract class MixinPlayerEntry {
             }, (buttonWidget, matrixStack, i, j) -> {
             }, Component.translatable("gui.socialInteractions.hide"));
             //32, 20
-            /*this.muteHideButton = new ImageButton(0, 0, 20, 20, 0, 32, 20, VoiceClient.ICONS, 256, 256, (buttonWidget) -> {
+/*
+            this.muteHideButton = new ImageButton(0, 0, 20, 20, 0, 32, 20, VoiceClient.ICONS, 256, 256, (buttonWidget) -> {
                 VoiceClient.getClientConfig().mute(id);
                 this.muteShowButton.visible = true;
                 this.muteHideButton.visible = false;

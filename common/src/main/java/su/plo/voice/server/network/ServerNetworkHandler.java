@@ -87,7 +87,7 @@ public abstract class ServerNetworkHandler {
         });
     }
 
-    protected static void execute(Runnable runnable) {
+    public static void execute(Runnable runnable) {
         if (executor == null || executor.isShutdown() || executor.isTerminated()) return;
 
         try {

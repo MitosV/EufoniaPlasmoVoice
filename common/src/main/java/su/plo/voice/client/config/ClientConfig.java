@@ -202,9 +202,9 @@ public class ClientConfig {
 
     public void mute(UUID uuid) {
         if (whitelist.get()) {
-            whitelisted.remove(uuid);
+            whitelisted.add(uuid);
         } else {
-            muted.add(uuid);
+            //muted.add(uuid);
         }
         save();
     }
@@ -213,7 +213,7 @@ public class ClientConfig {
         if (whitelist.get()) {
             whitelisted.add(uuid);
         } else {
-            muted.remove(uuid);
+            //muted.remove(uuid);
         }
         save();
     }
