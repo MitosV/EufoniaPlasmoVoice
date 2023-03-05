@@ -87,6 +87,7 @@ public abstract class VoiceServer {
         }
 
         ServerNetworkHandler.playerToken.clear();
+        ServerNetworkHandler.sendConnectPacket.clear();
 
         saveData(false);
     }

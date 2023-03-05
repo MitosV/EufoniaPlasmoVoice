@@ -2,7 +2,6 @@ package su.plo.voice.server.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.context.CommandContextBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -15,9 +14,9 @@ import su.plo.voice.server.network.ServerNetworkHandler;
 import java.io.IOException;
 import java.util.UUID;
 
-public class VoiceConnect {
+public class VoiceRec {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("vconnect")
+        dispatcher.register(Commands.literal("vreconnect")
                 .requires(source ->
                         source.hasPermission(3)
                 )
@@ -32,11 +31,8 @@ public class VoiceConnect {
 
 
     public static void connect(ServerPlayer player, CommandContext<CommandSourceStack> ctx){
-        ServerNetworkHandler.sendConnectPacket.forEach(playerUUID -> {
-            var player1 = ctx.getSource().getServer().getPlayerList().getPlayer(playerUUID);
-            assert player1 != null;
-            ctx.getSource().sendSuccess(Component.literal(player1.getName().getString()), false);
-        } );
+        ServerNetworkHandler.disconnectClient(player.getUUID());
+
         ServerNetworkHandler.execute(()->{
             UUID token = UUID.randomUUID();
             ServerNetworkHandler.playerToken.put(player.getUUID(), token);
@@ -50,10 +46,10 @@ public class VoiceConnect {
                                         : VoiceServer.getServerConfig().getPort(),
                                 VoiceServer.getPlayerManager().hasPermission(player.getUUID(), "voice.priority")),
                         player);
-                ctx.getSource().sendSuccess(Component.literal("Trying to connect "+player.getName().getString())
+                ctx.getSource().sendSuccess(Component.literal("Trying to reconnect "+player.getName().getString())
                 ,false);
             } catch (IOException e) {
-                ctx.getSource().sendFailure(Component.literal("Cant connect "+player.getName().getString()));
+                ctx.getSource().sendFailure(Component.literal("Cant reconnect "+player.getName().getString()));
             }
         });
     }

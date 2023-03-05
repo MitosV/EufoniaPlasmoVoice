@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import su.plo.voice.client.VoiceClient;
 import su.plo.voice.client.config.ServerSettings;
@@ -62,7 +63,8 @@ public abstract class ClientNetworkHandler {
             ip = serverIp;
         }
 
-        VoiceClient.LOGGER.info("Connecting to " + (client.getCurrentServer() == null ? "localhost" : client.getCurrentServer().ip));
+        VoiceClient.LOGGER.info("Connecting to " + (client.getCurrentServer() == null ? "localhost" :
+                client.getCurrentServer().ip));
 
         VoiceClient.setServerConfig(new ServerSettings(packet.getToken(), ip,
                 packet.getPort(), packet.hasPriority()));

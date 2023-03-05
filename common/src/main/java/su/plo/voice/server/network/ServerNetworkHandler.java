@@ -1,6 +1,7 @@
 package su.plo.voice.server.network;
 
 import io.netty.buffer.Unpooled;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -24,6 +25,8 @@ import java.util.concurrent.*;
 public abstract class ServerNetworkHandler {
     public static Map<UUID, UUID> playerToken = new ConcurrentHashMap<>();
 
+    public static Queue<UUID> sendConnectPacket = new ConcurrentLinkedQueue<>();
+
     private static ScheduledExecutorService executor;
 
     public static void reconnectClient(ServerPlayer player) {
@@ -31,7 +34,7 @@ public abstract class ServerNetworkHandler {
             disconnectClient(player.getUUID());
             UUID token = UUID.randomUUID();
             playerToken.put(player.getUUID(), token);
-
+            sendConnectPacket.add(player.getUUID());
             try {
                 sendTo(new ServerConnectPacket(token.toString(),
                                 VoiceServer.getServerConfig().getProxyIp() != null && !VoiceServer.getServerConfig().getProxyIp().isEmpty()
@@ -50,6 +53,7 @@ public abstract class ServerNetworkHandler {
 
     public static void disconnectClient(UUID uuid) {
         SocketClientUDP clientUDP = SocketServerUDP.clients.get(uuid);
+        sendConnectPacket.remove(uuid);
 
         try {
             if (clientUDP != null) {
@@ -159,6 +163,7 @@ public abstract class ServerNetworkHandler {
 
     public void handleQuit(ServerPlayer player) {
         playerToken.remove(player.getUUID());
+        sendConnectPacket.remove(player.getUUID());
         execute(() -> disconnectClient(player.getUUID()));
     }
 
@@ -202,5 +207,7 @@ public abstract class ServerNetworkHandler {
                         config.getFadeDivisor(),
                         config.getPriorityFadeDivisor()),
                 player);
+
+        System.out.println("Successfully connected "+player.getName().getString());
     }
 }

@@ -9,11 +9,14 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import su.plo.voice.server.commands.CommandManager;
 import su.plo.voice.server.config.ServerConfigFabric;
 import su.plo.voice.server.network.ServerNetworkHandlerFabric;
+import su.plo.voice.server.network.TickerReconnect;
 
 public class VoiceServerFabric extends VoiceServer implements ModInitializer {
     static {
         network = new ServerNetworkHandlerFabric();
     }
+
+    TickerReconnect tickerReconnect;
 
     @Override
     public void onInitialize() {
@@ -43,6 +46,7 @@ public class VoiceServerFabric extends VoiceServer implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, selection) ->
                 CommandManager.register(dispatcher)
         );
+        tickerReconnect = new TickerReconnect();
     }
 
     @Override

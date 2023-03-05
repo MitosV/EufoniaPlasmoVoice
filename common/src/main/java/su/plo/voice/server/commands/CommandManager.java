@@ -12,6 +12,7 @@ public class CommandManager {
         VoiceReload.register(dispatcher);
 
         VoiceConnect.register(dispatcher);
+        VoiceRec.register(dispatcher);
         VoiceMute.register(dispatcher);
         VoiceMuteList.register(dispatcher);
         VoiceDisconnect.register(dispatcher);
